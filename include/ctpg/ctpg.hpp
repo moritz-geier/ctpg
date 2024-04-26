@@ -1120,7 +1120,7 @@ namespace regex
             else
                 return d - '0';
         };
-        return dd(d1) * 16 + dd(d2);
+        return char(dd(d1) * 16) + dd(d2);
     }
 
     class char_subset
