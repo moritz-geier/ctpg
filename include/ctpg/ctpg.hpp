@@ -1781,7 +1781,7 @@ namespace detail
     struct parse_table_cursor_stack_type
     {
 #ifdef CTPG_EMBEDDED
-        using type = stdex::cvector<size16_t, cursor_stack_initial_capacity>;
+        using type = stdex::cvector<size16_t, CTPG_CURSOR_STACK_SIZE>;
 #else
         using type = std::vector<size16_t>;
 #endif
@@ -1800,7 +1800,7 @@ namespace detail
     struct parser_value_stack_type
     {
 #ifdef CTPG_EMBEDDED
-        using type = stdex::cvector<ValueVariantType, value_stack_initial_capacity>;
+        using type = stdex::cvector<ValueVariantType, CTPG_VALUE_STACK_SIZE>;
 #else
         using type = std::vector<ValueVariantType>;
 #endif
@@ -1815,7 +1815,7 @@ namespace detail
     >
     {
 #ifdef CTPG_EMBEDDED
-        using type = stdex::cvector<ValueVariantType, value_stack_initial_capacity>;
+        using type = stdex::cvector<ValueVariantType, CTPG_VALUE_STACK_SIZE>;
 #else
         using type = std::vector<ValueVariantType>;
 #endif
