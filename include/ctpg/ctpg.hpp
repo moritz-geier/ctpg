@@ -7,7 +7,9 @@
 #include <limits>
 #include <tuple>
 #include <algorithm>
+#ifndef CTPG_EMBEDDED
 #include <vector>
+#endif
 #include <optional>
 #include <variant>
 #include <string_view>
@@ -1778,7 +1780,11 @@ namespace detail
     template<typename Buffer, size_t EmptyRulesCount>
     struct parse_table_cursor_stack_type
     {
+#ifdef CTPG_EMBEDDED
+        using type = stdex::cvector<size16_t, cursor_stack_initial_capacity>;
+#else
         using type = std::vector<size16_t>;
+#endif
     };
 
     template<size_t N, size_t EmptyRulesCount>
@@ -1793,7 +1799,11 @@ namespace detail
     template<typename Buffer, size_t EmptyRulesCount, typename ValueVariantType, typename = void>
     struct parser_value_stack_type
     {
+#ifdef CTPG_EMBEDDED
+        using type = stdex::cvector<ValueVariantType, value_stack_initial_capacity>;
+#else
         using type = std::vector<ValueVariantType>;
+#endif
     };
 
     template<size_t N, size_t EmptyRulesCount, typename ValueVariantType>
@@ -1804,7 +1814,11 @@ namespace detail
         std::enable_if_t<!stdex::is_cvector_compatible<ValueVariantType>::value>
     >
     {
+#ifdef CTPG_EMBEDDED
+        using type = stdex::cvector<ValueVariantType, value_stack_initial_capacity>;
+#else
         using type = std::vector<ValueVariantType>;
+#endif
     };
 
     template<size_t N, size_t EmptyRulesCount, typename ValueVariantType>

@@ -19,6 +19,7 @@ string(COMPARE EQUAL "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}" is_top_
 
 option(CTPG_ENABLE_INSTALL "Include project-specific install rules" "${is_top_level}")
 option(CTPG_ENABLE_TESTS "Build test binaries" "${BUILD_TESTING}")
+option(CTPG_ENABLE_EMBEDDED "Build allocation free code" OFF)
 
 if (NOT DEFINED CTPG_INSTALL_CMAKEDIR)
     set(CTPG_INSTALL_CMAKEDIR "${CMAKE_INSTALL_DATAROOTDIR}/ctpg/cmake"
@@ -33,6 +34,9 @@ add_library(ctpg INTERFACE)
 add_library(ctpg::ctpg ALIAS ctpg)
 target_include_directories(ctpg INTERFACE "$<BUILD_INTERFACE:${ctpg_SOURCE_DIR}/include>")
 target_compile_features(ctpg INTERFACE cxx_std_17)
+if (${CTPG_ENABLE_EMBEDDED})
+    target_compile_definitions(ctpg INTERFACE CTPG_EMBEDDED)
+endif()
 
 # Test
 
@@ -50,15 +54,20 @@ if (CTPG_ENABLE_TESTS)
         tests/recurrence.cpp
         tests/precedence.cpp
         tests/compile_time.cpp
-        tests/list_helpers.cpp
         tests/skip_whitespace.cpp
         tests/typed_terms.cpp
-        tests/source_tracking.cpp
         tests/error_recovery.cpp
         tests/buffers.cpp
         tests/contexts.cpp
         tests/custom_lexer.cpp
     )
+
+    if (NOT ${CTPG_ENABLE_EMBEDDED})
+        target_sources(testbin PRIVATE
+            tests/list_helpers.cpp
+            tests/source_tracking.cpp
+        )
+    endif()
 
     target_link_libraries(testbin PRIVATE Catch2::Catch2 ctpg::ctpg)
     if (CTPG_WARNING_FLAGS)
