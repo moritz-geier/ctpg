@@ -67,6 +67,8 @@ if (CTPG_ENABLE_TESTS)
             tests/list_helpers.cpp
             tests/source_tracking.cpp
         )
+    else()
+        target_compile_definitions(testbin CTPG_CURSOR_STACK_SIZE=1024 CTPG_VALUE_STACK_SIZE=1024)
     endif()
 
     target_link_libraries(testbin PRIVATE Catch2::Catch2 ctpg::ctpg)
